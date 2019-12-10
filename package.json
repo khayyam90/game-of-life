@@ -1,0 +1,23 @@
+{
+  "name": "Game Of Life",
+  "version": "1.0.0",
+  "description": "",
+  "main": "out.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "source-map": "^0.7.3",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@types/jquery": "^3.3.31",
+    "@types/webpack": "^4.41.0",
+    "jquery": "^3.4.1",
+    "webpack": "^4.41.2"
+  }
+}

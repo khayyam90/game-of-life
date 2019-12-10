@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <script src="dist/bundle.js" ></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    </head>
+<body>
+    <style>
+    input.input{
+        width: 30px;
+        text-align: center;
+    }
+    #graph{
+        border: solid 1px black;
+    }
+    </style>
+
+    <h1>The game of life</h1>
+    <span>Presentation for this famous IT game. More info on <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Wikipedia</a></span>
+
+    <div class="row" style="margin: 0">
+        <div class="col-md-6">
+            <canvas height="680" width="680"></canvas>
+        </div>
+        <div class="col-md-5">
+            <h2><div id="nb"></div></h2>
+            <button class="btn btn-default" id="recreate">
+                Recreate an whole new random world
+            </button>
+            <button class="btn btn-default" id="clear">
+                Clear the world
+            </button>
+
+            <button class="btn btn-primary" id="stopStart">
+                <span class="glyphicon glyphicon-pause"></span>
+            </button>  
+
+            <div>An alive cell will stay alive if it has <input class="input" value="2" type="number" min="1" max="8" id="alive1" /> or <input type="number" min="1" max="8" class="input" value="3" id="alive2" /> alive neighbours</div>
+            <div>A dead cell will live if it has <input class="input" id="alive3" value="3" type="number" min="1" max="8" /> alive neighbours</div>
+
+            <h3>Evolution of the population</h3>
+            <canvas height="200" width="400" id="graph"></canvas>
+        </div> 
+    </div> 
+
+    <div>Implemented with love using TypeScript. Who said it was hard and inefficient to code in JavaScript ? Use the tools that work and that's all !</div>
+</body>
+
+</html>
