@@ -1,7 +1,5 @@
 import { Point } from "./Point";
 import { Renderer } from "./Renderer";
-import { stringify } from "querystring";
-import { REPL_MODE_STRICT } from "repl";
 import { RealTimeGraph } from "./RealTimeGraph";
 
 export class GameOfLife {	

@@ -12,7 +12,7 @@
   "devDependencies": {
     "source-map": "^0.7.3",
     "ts-loader": "^6.2.1",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.3"
   },
   "dependencies": {
     "@types/jquery": "^3.3.31",
