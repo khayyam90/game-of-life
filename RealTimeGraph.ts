@@ -1,3 +1,8 @@
+/**
+ * Basic class to manage the evolution of the population. 
+ * On each iteration, the graph gets a new value and it displays the last values
+ */
+
 export class RealTimeGraph{    
     private values = new Array<number>();
     private maxValuesToDisplay: number;    
@@ -21,7 +26,7 @@ export class RealTimeGraph{
         this.ctx.fillStyle = "gray";
 
         this.values.forEach(function(value: number){
-            // on dessine un rectangle
+            // let's draw a rectangle
             let height = Math.floor(100 * value / this.maximum);
 
             this.ctx.fillRect(posX, this.canvas.height - height, step, height); 

@@ -3,9 +3,9 @@
     <head>
         <title>The game of life</title>
         <meta charset="utf-8" />
+        <link rel="icon" type="image/png" href="favicon.png">
         <script src="dist/bundle.js" ></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <script data-ad-client="ca-pub-6406952994850404" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">        
     </head>
 <body>
     <style>
@@ -19,34 +19,81 @@
     </style>
 
     <h1>The game of life</h1>
-    <span>Presentation for this famous IT game. More info on <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Wikipedia</a></span>
 
-    <div class="row" style="margin: 0">
-        <div class="col-md-6">
-            <canvas height="680" width="680"></canvas>
+    <div class="home">
+        <p>Here is a presentation for this famous IT game.</p>
+        
+        <p>The game of life is a cell simulation where each cell can be alive or dead. On each iteration of the simulation, the status of all the cells is reconsidered against the following rules : 
+            <ul>
+                <li>An cell will live if it has 2 or 3 alive neighbours ;</li>
+                <li>A dead cell will live if it has 3 alive neighbours.</li>
+            </ul>
+        </p>
+        <p>These easy rules can be re-explained on biological ways such as : 
+            <ul>
+                <li>A cell with too much neighbours will not find enough energy to live : it will die ;</li>
+                <li>An isolated cell will die : it needs the other cells.</li>
+            </ul>
+            The parameters in the rules (max / min neighbours) have a direct incidence to the global simulation and to the size of the living population. 
+            Just request one more neighbour to get alive and you will lose almost your whole population. Just allow a cell to live with lower neighbours and you will face a population increasing until filling the entire simulation space.
+        </p>
+
+        <p>The simulation starts randomly and you will always notice some patterns : cells that do not move, cells that move together, cells that disappear together ...</p>
+        <p>You can consider the simulation ended when you do not have more status changes or when you keep looping on the same status. Have a look at the population graph, it helps understanding population growth</p>
+
+        <div class="well">
+            <h2>Technical considerations</h2>
+            <p>This online simulation is coded in 100% pure TypeScript. It does not need jQuery nor any other JS library. 
+                VanillaJS is powerfull enough to allow dynamic and interactive content on client side. The standard HTML5 API correctly cover the features that made jQuery needed in the 2000's. 
+                Time has gone and coders have to reconsider their dependencies.
+            </p>
+            <p>The CSS aspect could have been improved in removing the dependency with Bootstrap : importing the only very needed CSS blocks. I assumed that the CDN is fast enough and light enough not to burden the performances.</p>
+    
         </div>
-        <div class="col-md-5">
-            <h2><div id="nb"></div></h2>
-            <button class="btn btn-default" id="recreate">
-                Recreate an whole new random world
-            </button>
-            <button class="btn btn-default" id="clear">
-                Clear the world
-            </button>
+    </div>
+    <div id="demo">
+        <div class="row" style="margin: 0">
+            <div class="col-md-6">
+                <canvas height="880" width="880"></canvas>
+            </div>
+            <div class="col-md-5">
+                <h2><div id="nb"></div></h2>
+                <button class="btn btn-default" id="recreate">
+                    Recreate an whole new random world
+                </button>
+                <button class="btn btn-default" id="clear">
+                    Clear the world
+                </button>
+    
+                <button class="btn btn-primary" id="stopStart">
+                    <span class="glyphicon glyphicon-pause"></span>
+                </button>  
+    
+                <div>An alive cell will stay alive if it has <input class="input" value="2" type="number" min="1" max="8" id="alive1" /> or <input type="number" min="1" max="8" class="input" value="3" id="alive2" /> alive neighbours</div>
+                <div>A dead cell will live if it has <input class="input" id="alive3" value="3" type="number" min="1" max="8" /> alive neighbours</div>
+    
+                <h3>Evolution of the population</h3>
+                <canvas height="200" width="400" id="graph"></canvas>
 
-            <button class="btn btn-primary" id="stopStart">
-                <span class="glyphicon glyphicon-pause"></span>
-            </button>  
-
-            <div>An alive cell will stay alive if it has <input class="input" value="2" type="number" min="1" max="8" id="alive1" /> or <input type="number" min="1" max="8" class="input" value="3" id="alive2" /> alive neighbours</div>
-            <div>A dead cell will live if it has <input class="input" id="alive3" value="3" type="number" min="1" max="8" /> alive neighbours</div>
-
-            <h3>Evolution of the population</h3>
-            <canvas height="200" width="400" id="graph"></canvas>
+                <div>After several simulations, you can exhib some special patterns. Some are stable and do not move anymore. Some are looping infinitely, some others are moving.</div>
+                <img src="images/stable1.png" />
+                <img src="images/stable2.png" />
+                <img src="images/stable3.png" />
+                <img src="images/stable4.png" />
+                <img src="images/stable5.png" />
+                <img src="images/stable6.png" />
+                <img src="images/stable7.png" />
+                <img src="images/blink1.png" />
+                <img src="images/spaceship.png" />
+            </div> 
         </div> 
-    </div> 
+    
+        <div>Implemented with love using TypeScript. Who said it was hard and inefficient to code in JavaScript ? Use the tools that work and that's all !</div>
+    </div>
+   
+    
 
-    <div>Implemented with love using TypeScript. Who said it was hard and inefficient to code in JavaScript ? Use the tools that work and that's all !</div>
+    
 </body>
 
 </html>

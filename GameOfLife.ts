@@ -3,7 +3,7 @@ import { Renderer } from "./Renderer";
 import { RealTimeGraph } from "./RealTimeGraph";
 
 export class GameOfLife {	
-    private pointsVivants : Map<string, Point>;
+    private livingPoints : Map<string, Point>;
     private renderer: Renderer;
     private maxFps : number;
     private canContinue: boolean = true;
@@ -13,13 +13,13 @@ export class GameOfLife {
     private rtGraph : RealTimeGraph;
 
     private isAlive(point: Point){
-        return this.pointsVivants.has(point.getHashKey());
+        return this.livingPoints.has(point.getHashKey());
     }
 
-    private lastFrame: Date;
+    private lastFrame: number;
 
     public redraw(){
-        this.renderer.drawPointsVivants(this.pointsVivants);        
+        this.renderer.drawLivingPoints(this.livingPoints);        
     }
 
     private runGame(){
@@ -27,66 +27,71 @@ export class GameOfLife {
             return;
         }
 
-        let nouveauxPoints = new Map<string, Point>();
+        let newPoints = new Map<string, Point>();
 
-        // on cherche la liste des cases potentiellement à changer
-        let casesAEtudier = new Map<string, Point>();
+        // let's find all the potential usefull cells
+        let cellsToStudy = new Map<string, Point>();
 
-        let nbVoisinsVivants = new Map<string, number>();
+        let nbLivingNeighbours = new Map<string, number>();
 
-        this.pointsVivants.forEach(function(point: Point, key: string){
-            let voisins = point.getNeighbours(this.renderer.getWidth(), this.renderer.getHeight());
-            voisins.forEach(function (v: Point){
+        this.livingPoints.forEach(function(point: Point, key: string){
+            let neighbours = point.getNeighbours(this.renderer.getWidth(), this.renderer.getHeight());
+            neighbours.forEach(function (v: Point){
                 let k = v.getHashKey();
 
-                if (!nbVoisinsVivants.has(k)){
-                    nbVoisinsVivants.set(k, 1);
+                if (!nbLivingNeighbours.has(k)){
+                    nbLivingNeighbours.set(k, 1);
                 }else{
-                    let valeurPrécédente = nbVoisinsVivants.get(k);
-                    nbVoisinsVivants.set(k, valeurPrécédente+1);
-                    if ( valeurPrécédente+1 >= 2){
-                        casesAEtudier.set(k, v);
+                    let previousValue = nbLivingNeighbours.get(k);
+                    nbLivingNeighbours.set(k, previousValue+1);
+                    if ( previousValue+1 >= 2){
+                        cellsToStudy.set(k, v);
                     }
                 }                
             }.bind(this));            
         }.bind(this));
 
-        // on ne garde que les cases qui ont au moins 2 voisins vivants
+        // we only keep the cells with 2+ neighbours
         
-        casesAEtudier.forEach(function(value: Point){
+        cellsToStudy.forEach(function(value: Point){
             let key = value.getHashKey();
-            let sommePointsVivants = nbVoisinsVivants.get(key);            
+            let sumLivingPoints = nbLivingNeighbours.get(key);            
 
-            if (this.isAlive(value) && (sommePointsVivants == this.param1 || sommePointsVivants == this.param2)){
+            // if I am alive and have enough living neighbours
+            if (this.isAlive(value) && (sumLivingPoints == this.param1 || sumLivingPoints == this.param2)){
                 // staying alive !
-                nouveauxPoints.set(key, value);
+                newPoints.set(key, value);
             }else{
-                if (!this.isAlive(value) && sommePointsVivants == this.param3){
-                    nouveauxPoints.set(key, value);
+                // if I am dead and have enough living neighbours
+                if (!this.isAlive(value) && sumLivingPoints == this.param3){
+                    newPoints.set(key, value);
                 }
             }
         }.bind(this));
 
-        this.pointsVivants = nouveauxPoints;
+        // at this moment, we known the cells to display in the current iteration.
+        // let's draw
+
+        this.livingPoints = newPoints;
 
         this.redraw();    
-        this.rtGraph.addValue(nouveauxPoints.size);    
+        this.rtGraph.addValue(newPoints.size);    
 
-        // contrôle du FPS
-        let duréeEntreDeuxFrames = 1000 / this.maxFps;
-        // est-on en retard ?
-        let now = new Date();
+        // FPS control
+        let durationBetweenTwoFrames = 1000 / this.maxFps;
+        // do we need to slow down ?
+        let now = Date.now();
 
-        let nowMilliTimeStamp = 60000 * now.getMinutes() +  1000 * now.getSeconds() + now.getMilliseconds();
-        let lastFrameMilliTimeStamp = 60000 * this.lastFrame.getMinutes() +  1000 * this.lastFrame.getSeconds() + this.lastFrame.getMilliseconds();
+        let pause = durationBetweenTwoFrames - (now - this.lastFrame);
 
-        let pause = duréeEntreDeuxFrames - (nowMilliTimeStamp - lastFrameMilliTimeStamp);
+        console.log("pause " + pause);
         
         if (pause < 0){
-            pause = 1;
+            pause = 0;
         }
 
         this.lastFrame = now;
+        // the setTimeout is not that accurate, the FPS will not be perfectly respected. Maybe with promises ?
         setTimeout(this.runGame.bind(this), pause);       
     }    
 
@@ -100,16 +105,16 @@ export class GameOfLife {
     }
 
     public resetRandom(){
-        this.pointsVivants = new Map<string, Point>();   
+        this.livingPoints = new Map<string, Point>();   
         this.canContinue = false;  
 
-        // au début on remplit 20%
+        // at the beginning, let's fill 20% witl living cells
         let nb = Math.floor(0.2 * this.renderer.getWidth() * this.renderer.getHeight());
 
-        // on met des points au hasard
+        // let's fill randomly
         for (let i = 0; i< nb; i++){
             let p = new Point(Math.floor(Math.random() * this.renderer.getWidth()), Math.floor(Math.random() * this.renderer.getHeight()));
-            this.pointsVivants.set(p.getHashKey(), p);
+            this.livingPoints.set(p.getHashKey(), p);
         }
 
         this.canContinue = true;
@@ -117,7 +122,7 @@ export class GameOfLife {
     }
 
     public clear(){
-        this.pointsVivants = new Map<string, Point>();
+        this.livingPoints = new Map<string, Point>();
         this.redraw();
 
         for (let i = 0; i<10; i++){
@@ -130,9 +135,9 @@ export class GameOfLife {
         this.rtGraph = new RealTimeGraph("graph");
         
         this.maxFps = maxFps;
-        this.lastFrame = new Date();
+        this.lastFrame = Date.now();
 
-        this.pointsVivants = new Map<string, Point>();   
+        this.livingPoints = new Map<string, Point>();   
         this.resetRandom();   
 
         input1.addEventListener("change", function(){

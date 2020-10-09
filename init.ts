@@ -2,6 +2,9 @@ import { GameOfLife } from "./GameOfLife";
 import { Renderer } from "./Renderer";
 import { StopStartButton } from "./StopStartButton";
 
+/**
+ * When the page is loaded, we plug all the event listeners
+ */
 window.onload = function(){
     let canvas = document.getElementsByTagName("canvas")[0];
     let div = document.getElementById("nb");
@@ -13,7 +16,7 @@ window.onload = function(){
     let stopStartButton = new StopStartButton("stopStart");
 
     let renderer = new Renderer(div, canvas, 15, 2);
-    let gof = new GameOfLife(renderer, 10, input1, input2, input3);
+    let gof = new GameOfLife(renderer, 20, input1, input2, input3);
 
     stopStartButton.onStart(function(){        
         gof.start();

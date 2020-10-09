@@ -4,25 +4,25 @@ export class FrameRateCalculator{
     private lastFrameRate: number;
 
     constructor(){
-        this.lastInstant = (new Date()).getMilliseconds();
+        this.lastInstant = Date.now();
         this.nbFrames = 0;
         this.lastFrameRate = 0;
     }
 
 
     public hit(){
-        // est-ce encore la même seconde ?
-        let now = (new Date()).getMilliseconds();
+        // is it still the same second ?
+        let now = Date.now();
 
-        if (now < this.lastInstant){
+        if (now - this.lastInstant > 1000){
             this.lastFrameRate = this.nbFrames;
             this.nbFrames = 0;         
+            this.lastInstant = now;
+            return this.lastFrameRate;
+        }else{
+            this.nbFrames++;
+
+            return this.lastFrameRate;
         }
-
-        this.lastInstant = now;
-
-        this.nbFrames++;
-
-        return this.lastFrameRate;
     }
 }

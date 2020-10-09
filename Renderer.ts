@@ -7,23 +7,22 @@ export class Renderer {
     private ctx: any;
     private canvasData: any;
     private frameRate: FrameRateCalculator;
-    private taillePoint: number;
-    private tailleGrille: number;
+    private pointSize: number;
+    private gridSize: number;
 
     private playingWidth: number;
     private playingHeight: number;
-    private currentHighlightedPoint: Point = null;
 
-    private previousPointsVivants: Map<string, Point>;
+    private previousLivingPoints: Map<string, Point>;
 
     constructor(div: any, canvas: any, taillePoint: number, tailleGrille: number){
         this.div = div;
         this.canvas = canvas;
-        this.taillePoint = taillePoint;
-        this.tailleGrille = tailleGrille;
+        this.pointSize = taillePoint;
+        this.gridSize = tailleGrille;
         this.frameRate = new FrameRateCalculator();
-        this.previousPointsVivants = new Map<string, Point>();
- this.ctx = canvas.getContext("2d");
+        this.previousLivingPoints = new Map<string, Point>();
+        this.ctx = canvas.getContext("2d");
         this.canvasData = this.ctx.getImageData(0, 0, canvas.width, canvas.height);
        
         this.playingHeight = canvas.height / (tailleGrille + taillePoint);
@@ -41,10 +40,10 @@ export class Renderer {
         return this.playingHeight;
     }
 
-    private setPointValue(point: Point, color: any){
-        for (let i = 0; i<= this.taillePoint-1; i++){
-            for (let j = 0; j<= this.taillePoint-1; j++){
-                this.setPixelValue( (this.tailleGrille + this.taillePoint)*point.x + i, (this.tailleGrille + this.taillePoint)*point.y + j, color);
+    private setPointValue(point: Point, color: any){        
+        for (let i = 0; i<= this.pointSize-1; i++){
+            for (let j = 0; j<= this.pointSize-1; j++){
+                this.setPixelValue( (this.gridSize + this.pointSize)*point.x + i, (this.gridSize + this.pointSize)*point.y + j, color);
             }
         }
     }
@@ -58,33 +57,33 @@ export class Renderer {
         this.canvasData.data[idx + 3] = color.a;
     }
 
-    public drawPointsVivants(pointsVivants: Map<string, Point>){
+    public drawLivingPoints(livingPoints: Map<string, Point>){
         this.canvasData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
-        pointsVivants.forEach(function (value: Point){            
+        livingPoints.forEach(function (value: Point){            
             this.setPointValue(value, {r: 0, g: 0, b: 0, a: 255});
-            this.previousPointsVivants.delete(value.getHashKey());
+            this.previousLivingPoints.delete(value.getHashKey());
         }.bind(this));
 
-        // et pour les points qui étaient et qui ne sont plus, on les passe en blanc
-        this.previousPointsVivants.forEach(function(value: Point){
+        // the points not more living are set to white
+        this.previousLivingPoints.forEach(function(value: Point){
             this.setPointValue(value, {r: 255, g: 255, b: 255, a: 0});
         }.bind(this));
 
-        this.previousPointsVivants = pointsVivants;
+        this.previousLivingPoints = livingPoints;
 
         this.flushToCanvas();
-       /* let fps = this.frameRate.hit();        
+        let fps = this.frameRate.hit();        
         
-        this.div.textContent = pointsVivants.size + " cells (" + fps + " FPS)";*/
-
-        if (pointsVivants.size == 0){
+        if (livingPoints.size == 0){
             this.div.textContent = "No more living cell";
-        }else  if (pointsVivants.size == 0){
+        }else  if (livingPoints.size == 0){
             this.div.textContent = "1 living cell";
         }else{
-            this.div.textContent = pointsVivants.size + " living cells";
+            this.div.textContent = livingPoints.size + " living cells";
         }
+
+        this.div.textContent = livingPoints.size + " cells (" + fps + " FPS)";
     }
 
     private flushToCanvas(){
@@ -98,8 +97,8 @@ export class Renderer {
             let x = event.clientX - elemRect.left;
             let y = event.clientY - elemRect.top;
 
-            x = Math.floor(x/ (this.tailleGrille + this.taillePoint));
-            y = Math.floor(y/ (this.tailleGrille + this.taillePoint));
+            x = Math.floor(x/ (this.gridSize + this.pointSize));
+            y = Math.floor(y/ (this.gridSize + this.pointSize));
             
             f(new Point(x, y));
         }.bind(this), false);
@@ -108,13 +107,13 @@ export class Renderer {
     private drawGrille(){
         let color = {r: 196, g: 196, b: 196, a: 255};
 
-        for(let i = this.taillePoint; i < this.canvas.width; i += (this.tailleGrille + this.taillePoint)){
+        for(let i = this.pointSize; i < this.canvas.width; i += (this.gridSize + this.pointSize)){
             for (let j = 0; j<this.canvas.height; j++){
                 this.setPixelValue(i,j, color);
             }            
         }
 
-        for(let i = this.taillePoint; i < this.canvas.height; i += (this.tailleGrille + this.taillePoint)){
+        for(let i = this.pointSize; i < this.canvas.height; i += (this.gridSize + this.pointSize)){
             for (let j = 0; j<this.canvas.width; j++){
                 this.setPixelValue(j,i, color);
             }            

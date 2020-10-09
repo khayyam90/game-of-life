@@ -11,13 +11,14 @@
   "license": "ISC",
   "devDependencies": {
     "source-map": "^0.7.3",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.7.3"
+    "ts-loader": "^8.0.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "@types/jquery": "^3.3.31",
     "@types/webpack": "^4.41.0",
-    "jquery": "^3.4.1",
-    "webpack": "^4.41.2"
+    "jquery": "^3.4.1"
   }
 }
