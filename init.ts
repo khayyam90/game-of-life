@@ -7,6 +7,12 @@ import { StopStartButton } from "./StopStartButton";
  */
 window.onload = function(){
     let canvas = document.getElementsByTagName("canvas")[0];
+
+    // what is the available width for the canvas ?
+    let width = canvas.parentElement.getBoundingClientRect().width - 20;
+    canvas.style.width = width.toString() + "px";
+    canvas.setAttribute("width", width.toString());
+
     let div = document.getElementById("nb");
 
     let input1 = document.getElementById("alive1");

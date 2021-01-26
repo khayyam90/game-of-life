@@ -83,8 +83,6 @@ export class GameOfLife {
         let now = Date.now();
 
         let pause = durationBetweenTwoFrames - (now - this.lastFrame);
-
-        console.log("pause " + pause);
         
         if (pause < 0){
             pause = 0;
@@ -92,7 +90,13 @@ export class GameOfLife {
 
         this.lastFrame = now;
         // the setTimeout is not that accurate, the FPS will not be perfectly respected. Maybe with promises ?
-        setTimeout(this.runGame.bind(this), pause);       
+
+
+        let wait = (timeout : number) => new Promise(function(resolve){
+            setTimeout(resolve, timeout);
+        });
+
+        wait(pause).then(this.runGame.bind(this));     
     }    
 
     public stop(){
